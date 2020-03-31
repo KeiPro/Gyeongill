@@ -90,10 +90,211 @@
 	srand(); //random()함수의 seed값을 바꿔주는 함수. 
 	#include <ctime> --> srand(time(NULL));
 
-	*실습
+	*실습 1
 	3 ~ 7 사이의 랜덤한 숫자를 출력하는 프로그램
 	rand()%M = 0~M-1까지의 난수를 생성
 	rand()%M + N = N ~ (M-1)+N
 	N = 3으로 설정하면, M = 5로 설정 => 3~7까지 난수
 	
+	*실습 2
+	최소값 ~ 최대값 사이의 랜덤한 숫자를 출력하는 프로그램
+	rand()%(M-N+1)+N
+
+	*실습 3
+	컴퓨터가 1~10 사이의 숫자를 임의로 정한다. 
+	유저는 1~10사이의 숫자를 입력하여
+	맞으면 true 틀리면 false를 출력하는 프로그램을 작성하시오.
+
+	데이터 타입 / 연산자 / (제어구조)
+
+	1) 조건문 : 특정 조건에 따라 실행문을 실행 할지 안할지 제어 : if / switch
+	2) 반복문 : 특정 조건에 따라서 실행문을 일정 횟수만큼 반복 실행 : while / for
+
+	1) 조건문
+	1-1) if문
+
+	if(조건식)
+	{
+		실행문1;
+	}
+	else if(조건식2)
+	{
+		실행문2;
+	}
+	else
+	{
+		실행문3;
+	}
+
+	1-2)switch 문
+
+	switch (정수형 변수)
+	{
+		case 값1:
+			실행문1;
+			break;
+
+		case 값2:
+			실행문2;
+			break;
+
+		...
+
+		default:
+			
+			break;
+	}
+
+	2) 반복문
+	2-1) while문
+
+	while (조건식)
+	{
+		실행문;
+	}
+
+	2-2) do - while문
+
+	do
+	{
+		실행문;
+	}whlie (조건식)
+
+	2-3) for문
+
+	for ( (1)초기식 ; (2)조건식 ; (4)증감식 )
+	{
+		(3)실행문;
+	}
+
+	(1) 초기식 -> (2) 조건식 -> (3) 실행문 -> (4) 증감식 -> (2)조건식 -> (3)실행문 -> (4)증감식 -> ...
+	조건식의 결과값이 false가 될 때 까지 반복
+	
+	(1) 초기식 : 조건 체크를 위한 변수의 선언과 초기화
+	(2) 조건식 : 해당 조건의 리턴 값이 참일 때 중괄호 안의 실행문이 실행된다.
+	(3) 실행문 : 조건식이 참일 때 실행되는 구문
+	(4) 증감식 : 중괄호 안의 실행문이 실행된 뒤에 초기식에 선언한
+				 변수의 값을 증가, 감소 시킨다.
 */
+
+
+
+//실습1
+	//srand(time(NULL));
+
+	//int randNum;
+	//randNum = (rand()%5) + 3;
+	//cout << randNum << endl;
+
+#pragma region 실습2
+
+//srand(time(NULL));
+//
+//int randNum;
+//
+//int minValue;
+//int maxValue;
+//
+//cout << "최소값 입력 : ";
+//cin >> minValue;
+//
+//cout << "최대값 입력 : ";
+//cin >> maxValue;
+//
+//randNum = rand() % (maxValue - minValue + 1) + minValue;
+//
+//cout << "임의의 값 : ";
+//cout << randNum << endl;
+
+#pragma endregion
+
+
+
+#pragma region 실습3 - 방법1
+	//srand(time(NULL));
+
+	//int randNum;
+	//randNum = rand() % 10 + 1; //1~10까지 랜덤숫자 추출.
+	//
+	//int inputNumber; //입력 받을 숫자.
+
+	//cout << "컴 : 임의의 숫자가 정해졌습니다." << endl;
+
+	//cin >> inputNumber;
+
+	//if (inputNumber > randNum)
+	//{
+	//	cout << "컴 : 정답은 " << inputNumber << "보다 작습니다." << endl;
+
+	//	cin >> inputNumber;
+
+	//	if (inputNumber != randNum)
+	//	{
+	//		cout << "컴 : 정답은 " << randNum << "입니다." << endl;
+	//	}
+	//	else
+	//	{
+	//		cout << "컴 : 정답입니다." << endl;
+	//	}
+	//}
+	//else if (inputNumber < randNum)
+	//{
+	//	cout << "컴 : 정답은 " << inputNumber << "보다 큽니다." << endl;
+
+	//	cin >> inputNumber;
+
+	//	if (inputNumber != randNum)
+	//	{
+	//		cout << "컴 : 정답은 " << randNum << "입니다." << endl;
+	//	}
+	//	else
+	//	{
+	//		cout << "정답입니다." << endl;
+	//	}
+	//}
+	//else
+	//{
+	//	cout << "정답입니다." << endl;
+	//}
+#pragma endregion
+
+#pragma region 실습3 - 방법2
+srand(time(NULL));
+
+int randNum = rand() % 10 + 1;
+int inputNum;
+
+cout << "컴 : 임의의 숫자가 정해졌습니다." << endl;
+
+for (int i = 0; i < 2; i++)
+{
+	cin >> inputNum;
+
+	if (i == 0)
+	{
+		if (inputNum > randNum)
+		{
+			cout << "컴 : 정답은 " << inputNum << "보다 작습니다. " << endl;
+		}
+		else if (inputNum < randNum)
+		{
+			cout << "컴 : 정답은 " << inputNum << "보다 큽니다." << endl;
+		}
+		else
+		{
+			cout << "정답입니다." << endl;
+			break;
+		}
+	}
+	else
+	{
+		if (inputNum != randNum)
+		{
+			cout << "컴 : 정답은 " << randNum << "입니다." << endl;
+		}
+		else
+		{
+			cout << "정답입니다." << endl;
+		}
+	}
+}
