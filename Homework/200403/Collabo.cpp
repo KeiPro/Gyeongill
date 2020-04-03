@@ -43,13 +43,9 @@ int main()
 	const int mapHeight = 10; //맵 크기
 	char map[mapWidth][mapHeight]; //map을 저장할 변수 생성 ( x, y )
 	int myXPosition = 0, myYPosition = 0; //나의 x, y좌표
-	int escapeXPosition = 0, escapeYPosition = 0; //탈출구의 x, y좌표
+	int storeXPosition = 0, storeYPosition = 0; //상점의 x, y좌표
 	char inputKey; //입력받을 문자
 
-	//추가변수
-	int storeXPosition{0}, storeYPosition{0};  //상점의 x, y위치.
-
-	//
 
 #pragma endregion
 
@@ -62,6 +58,7 @@ int main()
 
 	int difficulty; //난이도
 	int monsterCount; //몬스터 수
+	bool positionOverlapCheck; //몬스터의 위치가 겹치는지를 체크하는 변수
 
 	const string SCISSORS = "가위"; //0
 	const string ROCK = "바위"; //1
@@ -92,23 +89,83 @@ int main()
 	cout << "난이도를 입력하세요(1~10) : ";
 	cin >> difficulty;
 
-	heroesHp = (int)(11 - difficulty * 0.6f);
+	heroesHp = (int)(11 - difficulty * 0.6f); //난이도에 의해 체력부분 설정.
 
-#pragma region 난이도 및 몬스터 개수설정
+#pragma region 난이도 및 몬스터 개수, 이름, 체력, 좌표 설정.
 
 	//새로 추가된 내용. 난이도 설정하기 및 몬스터 생성
+
+	////////////////////////////////////////////////////////////////////////////////////////////////
+	//  난이도에 따라 몬스터의 개수를 조정해야해서	Monster 구조체 변수를if문 안에서 써야되다보니,      // 
+	//  각 분기점마다 가위바위보, 상점에 대한 루프 등 탈출에 해당하는 코드까지(맵 생성 및 좌표설정)	//
+	//   복붙을 해야하는 일이  발생하였습니다. ㅠ.ㅠ								   			   	//
+	//	 이를 통해 함수의 소중함과 동적할당의 소중함을 다시금 깨닫게 됩니다.....		 				 //
+	////////////////////////////////////////////////////////////////////////////////////////////////
+	
+#pragma region 상점 위치 생성
+
+	//탈출구 위치 설정하기. 
+	while ((storeXPosition == 0) && (storeYPosition == 0))
+	{
+		storeXPosition = rand() % mapHeight;
+		storeYPosition = rand() % mapWidth;
+	}
+
+#pragma endregion
+	
 	if (difficulty < 4) //난이도가 4보다 작을 경우 ( 난이도 1 )
 	{
 		monsterCount = difficultyOne;
-		Monster monsters[difficultyOne];
-		int tmp[difficultyOne]; //이름을 랜덤하게 고르기 위해 5개의 숫자를 입력받을 변수
+		Monster monsters[difficultyOne]; //초기화
+		//int tmp[difficultyOne]; //이름을 랜덤하게 고르기 위해 5개의 숫자를 입력받을 변수
 
 		//몬스터의 수 만큼 for문을 돌려 이름을 선택한다.
-		//////////////////////////////////////////////////로또 번호 뽑는 방법
 		for (int i = 0; i < monsterCount; i++)
 		{
-			tmp[i] = rand() % stuNumberTotal;
+			monsters[i].name = gyeongillStuName[rand() % stuNumberTotal];  //몬스터 이름 설정. 중복이름 가능
+			monsters[i].hp = (rand() % 5 + 1); // 1~5중 랜덤으로 체력 부여.
+			
+#pragma region 복붙의 범위
 
+			//몬스터의 좌표를 설정하는 while문.
+			while ( true ) //상점 위치인 경우
+			{
+				positionOverlapCheck = false; //기본을 false로 설정.
+				monsters[i].monX = rand() % mapHeight;
+				monsters[i].monY = rand() % mapWidth;
+
+				if ((monsters[i].monX == myXPosition && monsters[i].monY == myYPosition) //몬스터가 내 위치인 경우
+					|| (monsters[i].monX == storeXPosition && monsters[i].monY == storeYPosition)) //몬스터가 상점 위치인 경우
+				{
+					continue; //다시 while문으로 돌아가 몬스터의 좌표를 다시 설정한다.
+				}
+				
+				//몬스터들끼리 좌표가 겹치지 않기 위해 설정. 
+				//i==0인 경우는 첫 번째 몬스터를 설정하는 것이므로 다른 몬스터의 위치에 영향을 받지 않는다.
+				if(i != 0)
+				{
+					for (int j = 0; j < i; j++)
+					{
+						//전에 설정된 몬스터의 위치와 겹칠 경우 if문 안으로 들어간다.
+						if (monsters[i].monX == monsters[j].monX && monsters[i].monY == monsters[j].monY)
+						{
+							positionOverlapCheck = true;
+							break;
+						}
+
+					}
+
+					//이 if문을 통해 겹치냐는 변수가 true가 되면, continue를 통해 다시 while문을 반복하게 된다.
+					if (positionOverlapCheck == true)
+						continue;
+				}
+
+				break; //몬스터가 내 위치도 아니고, 상점 위치도 아니고, 몬스터들끼리 좌표도 겹치지 않으므로 break를 통해 나간다.
+			}
+
+			cout << i << "번 monsters : " << monsters[i].monX << ", " << monsters[i].monY << endl;
+
+#pragma endregion
 
 		}
 	}
@@ -116,53 +173,96 @@ int main()
 	{
 		monsterCount = difficultyTwo;
 		Monster monsters[difficultyTwo];
-		int tmp[difficultyTwo]; //이름을 랜덤하게 고르기 위해 10개의 숫자를 입력받을 변수
+		//int tmp[difficultyTwo]; //이름을 랜덤하게 고르기 위해 10개의 숫자를 입력받을 변수
 		
 		//몬스터의 수 만큼 for문을 돌려 이름을 선택한다.
 		for (int i = 0; i < monsterCount; i++)
 		{
-			tmp[i] = rand() % stuNumberTotal;
+			monsters[i].name = gyeongillStuName[rand() % stuNumberTotal]; //몬스터 이름 설정 중복 가능
+			monsters[i].hp = (rand() % 4 + 2); // 2~5중 랜덤으로 체력 부여.
+
+			//tmp[i] = rand() % stuNumberTotal;
 		}
 	}
 	else if (difficulty < 9)
 	{
 		monsterCount = difficultyThree;
 		Monster monsters[difficultyThree];
-		int tmp[difficultyThree]; //이름을 랜덤하게 고르기 위해 15개의 숫자를 입력받을 변수
+		//int tmp[difficultyThree]; //이름을 랜덤하게 고르기 위해 15개의 숫자를 입력받을 변수
 
 		//몬스터의 수 만큼 for문을 돌려 이름을 선택한다.
 		for (int i = 0; i < monsterCount; i++)
 		{
-			tmp[i] = rand() % stuNumberTotal;
+			
+			monsters[i].name = gyeongillStuName[rand() % stuNumberTotal]; ///몬스터 이름 설정 중복 가능
+			monsters[i].hp = (rand() % 5 + 3); // 3~7중 랜덤으로 체력 부여.
+
+			//tmp[i] = rand() % stuNumberTotal;
 		}
 	}
-	else
+	else //난이도 9, 10
 	{
 		monsterCount = difficultyFour;
 		Monster monsters[difficultyFour];
-		int tmp[difficultyFour]; //이름을 랜덤하게 고르기 위해 20개의 숫자를 입력받을 변수
+		//int tmp[difficultyFour]; //이름을 랜덤하게 고르기 위해 20개의 숫자를 입력받을 변수
 
 		//몬스터의 수 만큼 for문을 돌려 이름을 선택한다.
 		for (int i = 0; i < monsterCount; i++)
 		{
-			tmp[i] = rand() % stuNumberTotal;
+			
+			monsters[i].name = gyeongillStuName[rand() % stuNumberTotal]; //몬스터 이름 설정 중복 가능
+			monsters[i].hp = (rand() % 5 + 4); // 4~8중 랜덤으로 체력 부여.
+
+#pragma region 몬스터의 좌표를 설정하는 while문
+
+			while (true) //상점 위치인 경우
+			{
+				positionOverlapCheck = false; //기본을 false로 설정.
+				monsters[i].monX = rand() % mapHeight;
+				monsters[i].monY = rand() % mapWidth;
+
+				if ((monsters[i].monX == myXPosition && monsters[i].monY == myYPosition) //몬스터가 내 위치인 경우
+					|| (monsters[i].monX == storeXPosition && monsters[i].monY == storeYPosition)) //몬스터가 상점 위치인 경우
+				{
+					continue; //다시 while문으로 돌아가 몬스터의 좌표를 다시 설정한다.
+				}
+
+				//몬스터들끼리 좌표가 겹치지 않기 위해 설정. 
+				//i==0인 경우는 첫 번째 몬스터를 설정하는 것이므로 다른 몬스터의 위치에 영향을 받지 않는다.
+				if (i != 0)
+				{
+					for (int j = 0; j < i; j++)
+					{
+						//전에 설정된 몬스터의 위치와 겹칠 경우 if문 안으로 들어간다.
+						if (monsters[i].monX == monsters[j].monX && monsters[i].monY == monsters[j].monY)
+						{
+							positionOverlapCheck = true;
+							break;
+						}
+					}
+
+					//이 if문을 통해 겹치냐는 변수가 true가 되면, continue를 통해 다시 while문을 반복하게 된다.
+					if (positionOverlapCheck == true)
+						continue;
+				}
+
+				break; //몬스터가 내 위치도 아니고, 상점 위치도 아니고, 몬스터들끼리 좌표도 겹치지 않으므로 break를 통해 나간다.
+			}
+
+			cout << i << "번 monsters : " << monsters[i].monX << ", " << monsters[i].monY << endl;
+
+#pragma endregion
+
+
+#pragma region
+
+#pragma endregion
+
 		}
 	}
 
 #pragma endregion
 
-#pragma region 몬스터 이름, 체력 설정하기
-
-	
-
-
-
-
-#pragma endregion
-
-
-	//난이도에 따라서 영웅의 HP, 몬스터 숫자가 변동된다.
-	//--> 난이도 : difficulty ==> 영웅의 HP : 10 - difficulty*0.5 , 몬스터 숫자 : difficulty * 2.7f를 정수 변환;
 	cout << "< 난이도에 의해 HP와 몬스터를 조정합니다. >" << endl;
 	Sleep(1500);
 
@@ -178,110 +278,97 @@ int main()
 
 #pragma endregion
 
-#pragma region 탈출구 위치, 몬스터 위치 설정.
+	////맵에 내 위치, 탈출구, map을 저장하는 for문.
+	//for (int i = 0; i < mapHeight; i++)
+	//{
+	//	for (int j = 0; j < mapWidth; j++)
+	//	{
+	//		if (i == 0 && j == 0) //내 위치 생성
+	//		{
+	//			map[myXPosition][myYPosition] = 'O';
+	//		}
+	//		else if ((i == storeXPosition) && (j == storeYPosition)) //탈출구 출력
+	//		{
+	//			map[storeXPosition][storeXPosition] = '$';
+	//		}
+	//		else //map생성
+	//		{
+	//			map[i][j] = '#';
+	//		}
+	//	}
+	//}
 
-	//탈출구 위치 설정하기. 
-	while ((escapeXPosition == 0) && (escapeYPosition == 0))
-	{
-		escapeXPosition = rand() % mapHeight;
-		escapeYPosition = rand() % mapWidth;
-	}
+	//while (true)
+	//{
+	//	system("cls");
 
-#pragma endregion
+	//	//맵을 계속해서 출력하는 for문
+	//	for (int i = 0; i < mapHeight; i++)
+	//	{
+	//		for (int j = 0; j < mapWidth; j++)
+	//		{
+	//			cout << map[i][j];
+	//		}
+	//		cout << endl;
+	//	}
 
-	
+	//	//Finish 코드.
+	//	//if ((myXPosition == escapeXPosition) && (myYPosition == escapeYPosition))
+	//	//{
+	//	//	cout << "탈출하셨습니다! 축하드립니다!" << endl;
+	//	//	break;
+	//	//}
 
-	//맵에 내 위치, 탈출구, map을 저장하는 for문.
-	for (int i = 0; i < mapHeight; i++)
-	{
-		for (int j = 0; j < mapWidth; j++)
-		{
-			if (i == 0 && j == 0) //내 위치 생성
-			{
-				map[myXPosition][myYPosition] = 'O';
-			}
-			else if ((i == escapeXPosition) && (j == escapeYPosition)) //탈출구 출력
-			{
-				map[escapeXPosition][escapeYPosition] = 'X';
-			}
-			else //map생성
-			{
-				map[i][j] = '#';
-			}
-		}
-	}
+	//	inputKey = _getch(); //사용자로부터 입력받는 _getch()함수.
 
-	while (true)
-	{
-		system("cls");
+	//	if (inputKey == 'w')
+	//	{
+	//		if (myXPosition == 0) //올라갈 곳이 없으면 계속해서 while문을 돌린다.
+	//			continue;
+	//		else
+	//		{
+	//			map[myXPosition][myYPosition] = '#';
+	//			myXPosition--;
+	//			map[myXPosition][myYPosition] = 'O';
+	//		}
+	//	}
 
-		//맵을 계속해서 출력하는 for문
-		for (int i = 0; i < mapHeight; i++)
-		{
-			for (int j = 0; j < mapWidth; j++)
-			{
-				cout << map[i][j];
-			}
-			cout << endl;
-		}
+	//	if (inputKey == 'a')
+	//	{
+	//		if (myYPosition == 0) //왼쪽으로 갈 곳이 없으면 계속해서 while문을 돌린다.
+	//			continue;
+	//		else
+	//		{
+	//			map[myXPosition][myYPosition] = '#';
+	//			myYPosition--;
+	//			map[myXPosition][myYPosition] = 'O';
+	//		}
+	//	}
 
-		//Finish 코드.
-		if ((myXPosition == escapeXPosition) && (myYPosition == escapeYPosition))
-		{
-			cout << "탈출하셨습니다! 축하드립니다!" << endl;
-			break;
-		}
+	//	if (inputKey == 's')
+	//	{
+	//		if (myXPosition == mapHeight - 1) //아래로 갈 곳이 없으면 계속해서 while문을 돌린다.
+	//			continue;
+	//		else
+	//		{
+	//			map[myXPosition][myYPosition] = '#';
+	//			myXPosition++;
+	//			map[myXPosition][myYPosition] = 'O';
+	//		}
+	//	}
 
-		inputKey = _getch(); //사용자로부터 입력받는 _getch()함수.
-
-		if (inputKey == 'w')
-		{
-			if (myXPosition == 0) //올라갈 곳이 없으면 계속해서 while문을 돌린다.
-				continue;
-			else
-			{
-				map[myXPosition][myYPosition] = '#';
-				myXPosition--;
-				map[myXPosition][myYPosition] = 'O';
-			}
-		}
-
-		if (inputKey == 'a')
-		{
-			if (myYPosition == 0) //왼쪽으로 갈 곳이 없으면 계속해서 while문을 돌린다.
-				continue;
-			else
-			{
-				map[myXPosition][myYPosition] = '#';
-				myYPosition--;
-				map[myXPosition][myYPosition] = 'O';
-			}
-		}
-
-		if (inputKey == 's')
-		{
-			if (myXPosition == mapHeight - 1) //아래로 갈 곳이 없으면 계속해서 while문을 돌린다.
-				continue;
-			else
-			{
-				map[myXPosition][myYPosition] = '#';
-				myXPosition++;
-				map[myXPosition][myYPosition] = 'O';
-			}
-		}
-
-		if (inputKey == 'd')
-		{
-			if (myYPosition == mapWidth - 1) //오른쪽으로 갈 곳이 없으면 계속해서 while문을 돌린다.
-				continue;
-			else
-			{
-				map[myXPosition][myYPosition] = '#';
-				myYPosition++;
-				map[myXPosition][myYPosition] = 'O';
-			}
-		}
-	}
+	//	if (inputKey == 'd')
+	//	{
+	//		if (myYPosition == mapWidth - 1) //오른쪽으로 갈 곳이 없으면 계속해서 while문을 돌린다.
+	//			continue;
+	//		else
+	//		{
+	//			map[myXPosition][myYPosition] = '#';
+	//			myYPosition++;
+	//			map[myXPosition][myYPosition] = 'O';
+	//		}
+	//	}
+	//}
 
 	return 0;
 }

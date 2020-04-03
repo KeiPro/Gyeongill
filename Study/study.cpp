@@ -38,3 +38,27 @@
 
 
 */
+
+#include <iostream>
+#include <string>
+ 
+using namespace std;
+
+struct Zombie
+{
+	int hp;
+	string name;
+	float speed;
+};
+
+int main()
+{
+	Zombie zombies[4] = { {0}, {0}, {0} };
+
+	for (int i = 0; i < 4; i++)
+	{
+		cout << zombies[i].name << endl;
+	}
+
+	return 0;
+}
