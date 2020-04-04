@@ -43,6 +43,7 @@ int main()
 	const int mapHeight = 10; //맵 크기
 	char map[mapWidth][mapHeight]; //map을 저장할 변수 생성 ( x, y )
 	int myXPosition = 0, myYPosition = 0; //나의 x, y좌표
+	int myPrevXPosition = 0, myPrevYPosition = 0; //움직일 때마다 전 좌표를 저장하는 변수.
 	int storeXPosition = 0, storeYPosition = 0; //상점의 x, y좌표
 	char inputKey; //입력받을 문자
 
@@ -60,11 +61,13 @@ int main()
 	int monsterCount; //몬스터 수
 	bool positionOverlapCheck; //몬스터의 위치가 겹치는지를 체크하는 변수
 
-	const string SCISSORS = "가위"; //0
-	const string ROCK = "바위"; //1
-	const string PAPER = "보"; //2
+	const int SCISSORS = 1; //가위
+	const int ROCK = 2; //바위
+	const int PAPER = 3; //보
 	
 	int inputSPR; // 가위, 바위, 보 입력받을 변수
+	int portion; //포션의 번호를 입력할 변수
+	int randNumber; //컴퓨터가 랜덤하게 가위바위보를 설정할 변수
 
 	//추가변수
 	const int difficultyOne = 5; //난이도 1
@@ -89,13 +92,6 @@ int main()
 
 	heroesHp = (int)(11 - difficulty * 0.6f); //난이도에 의해 체력부분 설정.
 
-	////////////////////////////////////////////////////////////////////////////////////////////////
-	//  난이도에 따라 몬스터의 개수를 조정해야해서	Monster 구조체 변수를if문 안에서 써야되다보니,      // 
-	//  각 분기점마다 가위바위보, 상점에 대한 루프 등 탈출에 해당하는 코드까지(맵 생성 및 좌표설정)	//
-	//   복붙을 해야하는 일이  발생하였습니다. ㅠ.ㅠ								   			   	//
-	//	 이를 통해 함수의 소중함과 동적할당의 소중함을 다시금 깨닫게 됩니다.....		 				 //
-	////////////////////////////////////////////////////////////////////////////////////////////////
-	
 #pragma region 상점 위치 생성
 
 	//탈출구 위치 설정하기. 
@@ -250,7 +246,7 @@ int main()
 		
 #pragma endregion
 
-#pragma region 미로 출력
+#pragma region 미로 출력 및 움직임
 		while (true)
 		{
 			system("cls");
@@ -267,13 +263,16 @@ int main()
 
 			inputKey = _getch(); //사용자로부터 입력받는 _getch()함수.
 
+#pragma region 움직임
 			if (inputKey == 'w')
 			{
 				if (myXPosition == 0) //올라갈 곳이 없으면 계속해서 while문을 돌린다.
 					continue;
 				else
 				{
+					//단순하게 몬스터나 상점이 없으면 이동하는 코드
 					map[myXPosition][myYPosition] = '#';
+					myPrevXPosition = myXPosition, myPrevYPosition = myYPosition;
 					myXPosition--;
 					map[myXPosition][myYPosition] = 'O';
 				}
@@ -286,6 +285,7 @@ int main()
 				else
 				{
 					map[myXPosition][myYPosition] = '#';
+					myPrevXPosition = myXPosition, myPrevYPosition = myYPosition;
 					myYPosition--;
 					map[myXPosition][myYPosition] = 'O';
 				}
@@ -298,6 +298,7 @@ int main()
 				else
 				{
 					map[myXPosition][myYPosition] = '#';
+					myPrevXPosition = myXPosition, myPrevYPosition = myYPosition;
 					myXPosition++;
 					map[myXPosition][myYPosition] = 'O';
 				}
@@ -310,10 +311,133 @@ int main()
 				else
 				{
 					map[myXPosition][myYPosition] = '#';
+					myPrevXPosition = myXPosition, myPrevYPosition = myYPosition;
 					myYPosition++;
 					map[myXPosition][myYPosition] = 'O';
 				}
 			}
+#pragma endregion
+
+			//움직임을 진행하고 나서 상점인지, 몬스터인지를 체크
+
+#pragma region 상점
+			//상점인지를 체크하는 코드
+			if (myXPosition == storeXPosition && myYPosition == storeYPosition)
+			{
+				//상점에 대한 정보를 출력
+				system("cls");
+				cout << "< 상점 입니다. >" << endl;
+				cout << "hp 1 회복하기(금액100원): 1입력 " << endl;
+				cout << "hp full 회복하기(금액300원) : 2입력 " << endl;
+				cout << "상점 나가기 : 3입력" << endl;
+				cout << "==========================================" << endl;
+				cout << "현재 남은 체력 : " << heroesHp << endl;
+				cout << "남은 몬스터 수 : " << monsterCount << endl;
+				cout << "가진 금액 : " << money << endl;
+				cout << "==========================================" << endl;
+
+				while (true)
+				{
+					cout << "번호를 입력해 주세요 : ";
+					cin >> portion;
+					if (portion == 1)
+					{
+						//돈이 없는 경우
+						if (money < 100)
+						{
+							cout << "금액이 부족합니다." << endl;
+						}
+						//체력이 full인 경우
+						else if (heroesHp >= (int)(10 - difficulty * 0.5f))
+						{
+							cout << "체력이 풀 입니다." << endl;
+						}
+						//체력이 full이 아니고 돈도 충분한 경우
+						else
+						{
+							money -= 100;
+							heroesHp += 1;
+							cout << "체력이 1회복 되었습니다. " << endl;
+							cout << "현재 남은 체력 : " << heroesHp << endl;
+							cout << "남은 몬스터 수 : " << monsterCount << endl;
+						}
+					}
+					else if (portion == 2)
+					{
+						//돈이 없는 경우
+						if (money < 300)
+						{
+							cout << "금액이 부족합니다." << endl;
+						}
+						//체력이 full인 경우
+						else if (heroesHp >= (int)(10 - difficulty * 0.5f))
+						{
+							cout << "체력이 풀 입니다." << endl;
+						}
+						//체력이 full이 아니고 돈도 충분한 경우
+						else
+						{
+							money -= 300;
+							heroesHp = (int)(10 - difficulty * 0.5f);
+							cout << "체력이 풀로 회복되었습니다. " << endl;
+							cout << "현재 남은 체력 : " << heroesHp << endl;
+							cout << "남은 몬스터 수 : " << monsterCount << endl;
+						}
+					}
+					else
+					{
+						cout << "상점에서 나갑니다." << endl;
+						Sleep(2000);
+						system("cls");
+						break;
+					}
+				}
+				myXPosition = myPrevXPosition, myYPosition = myPrevYPosition;
+				map[myXPosition][myYPosition] = 'O';
+				map[storeXPosition][storeYPosition] = '$';
+			}
+#pragma endregion
+
+#pragma region 몬스터 전투
+
+			//몬스터인지를 체크하는 코드
+			for (int i = 0; i < monsterCount; i++)
+			{
+				if (myXPosition == monsters[i].monX && myYPosition == monsters[i].monY)
+				{
+					//가위바위보를 하는 코드
+					randNumber = (rand() % 3 + 1); //컴퓨터 가위바위보 선택
+
+					cout << "가위(1), 바위(2), 보(3) 입력 : ";
+					cin >> inputSPR;
+
+					if (inputSPR == SCISSORS) //0
+					{
+						if (randNumber == SCISSORS)
+						{
+							cout << "결과 : 비겼습니다." << endl;
+							cout << "다시 입력해 주세요." << endl;
+							cout << endl;
+						}
+						else if (randNumber == ROCK)
+						{
+							cout << "결과 : 졌습니다." << endl;
+							cout << "현재 남은 체력 : " << --heroesHp << endl;
+
+							if (heroesHp <= 0)
+							{
+								cout << "전투에서 패배하였습니다." << endl;
+								break;
+							}
+						}
+					}
+
+				}
+
+			}
+
+#pragma endregion
+
 		}
 	}
 #pragma endregion
