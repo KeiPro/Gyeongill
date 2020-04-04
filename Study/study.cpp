@@ -53,11 +53,10 @@ struct Zombie
 
 int main()
 {
-	Zombie zombies[4] = { {0}, {0}, {0} };
-
-	for (int i = 0; i < 4; i++)
+	int i = -2;
+	while (i++)
 	{
-		cout << zombies[i].name << endl;
+		cout << i << ", ";
 	}
 
 	return 0;
