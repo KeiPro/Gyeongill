@@ -38,6 +38,7 @@
 
 */
 
+<<<<<<< HEAD:Study/200405/study.cpp
 /*
 	200406.
 	  1.** cin>>입력 오류 예외처리하는 방법.
@@ -84,3 +85,27 @@
 
 
 */
+=======
+#include <iostream>
+#include <string>
+ 
+using namespace std;
+
+struct Zombie
+{
+	int hp;
+	string name;
+	float speed;
+};
+
+int main()
+{
+	int i = -2;
+	while (i++)
+	{
+		cout << i << ", ";
+	}
+
+	return 0;
+}
+>>>>>>> a29828e06c006496ed55935c50f167ab0e3b202d:Study/study.cpp

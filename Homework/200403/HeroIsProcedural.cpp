@@ -30,11 +30,11 @@ int main()
 	int difficulty; //난이도
 	int monsterCount; //몬스터 수
 
-	const string SCISSORS = "가위"; //0
-	const string ROCK = "바위"; //1
-	const string PAPER = "보"; //2
+	const int SCISSORS = 1; //0
+	const int ROCK = 2; //1
+	const int PAPER = 3; //2
 	string monsterSelect = "선택중";
-	string inputString; // 가위, 바위, 보 입력받을 변수
+	int inputNum; // 가위, 바위, 보 입력받을 변수
 	int inputSelect; //상점(0)을 갈 지, 탐험(1)을 더 할 지를 입력받을 변수
 
 	srand(time(NULL));
@@ -50,18 +50,18 @@ int main()
 
 	//난이도에 따라서 영웅의 HP, 몬스터 숫자가 변동된다.
 	//--> 난이도 : difficulty ==> 영웅의 HP : 10 - difficulty*0.5 , 몬스터 숫자 : difficulty * 2.7f를 정수 변환;
-	cout << "< 난이도에 의해 HP와 몬스터를 조정합니다. >" << endl;
-	Sleep(1500);
+	//cout << "< 난이도에 의해 HP와 몬스터를 조정합니다. >" << endl;
+	//Sleep(1500);
 
-	cout << "영웅의 HP : " << heroesHp << endl;
+	//cout << "영웅의 HP : " << heroesHp << endl;
 
-	Sleep(1000);
-	cout << "몬스터 숫자 : " << monsterCount << endl;
+	//Sleep(1000);
+	//cout << "몬스터 숫자 : " << monsterCount << endl;
 
-	Sleep(1500);
-	cout << "모든 몬스터를 다 잡을 때까지 전투는 계속됩니다..." << endl;
-	cout << endl;
-	Sleep(2000);
+	//Sleep(1500);
+	//cout << "모든 몬스터를 다 잡을 때까지 전투는 계속됩니다..." << endl;
+	//cout << endl;
+	//Sleep(2000);
 
 	system("cls"); //화면 지우기
 
@@ -73,18 +73,34 @@ int main()
 
 		int randNumber = rand() % 3; // 0 ~ 2 
 
-		cout << "가위, 바위, 보 입력 : ";
-		cin >> inputString;
-		cout << "=========================" << endl;
-		if (inputString == SCISSORS) //0
+		cout << "컴 : ";
+		if (randNumber == SCISSORS)
 		{
-			if (randNumber == 0)
+			cout << "가위" << endl;
+		}
+
+		if (randNumber == ROCK)
+		{
+			cout << "바위" << endl;
+		}
+
+		if (randNumber == PAPER)
+		{
+			cout << "보" << endl;
+		}
+
+		cout << "가위, 바위, 보 입력 : ";
+		cin >> inputNum;
+		cout << "=========================" << endl;
+		if (inputNum == SCISSORS) //0
+		{
+			if (randNumber == SCISSORS)
 			{
 				cout << "결과 : 비겼습니다." << endl;
 				cout << "다시 입력해 주세요." << endl;
 				cout << endl;
 			}
-			else if (randNumber == 1)
+			else if (randNumber == ROCK)
 			{
 				cout << "결과 : 졌습니다." << endl;
 				cout << "현재 남은 체력 : " << --heroesHp << endl;
@@ -202,15 +218,15 @@ int main()
 				}
 			}
 		}
-		if (inputString == ROCK) //1
+		if (inputNum == ROCK) //1
 		{
-			if (randNumber == 1)
+			if (randNumber == ROCK)
 			{
 				cout << "결과 : 비겼습니다." << endl;
 				cout << "다시 입력해 주세요." << endl;
 				cout << endl;
 			}
-			else if (randNumber == 2)
+			else if (randNumber == PAPER)
 			{
 				cout << "결과 : 졌습니다." << endl;
 				cout << "현재 남은 체력 : " << --heroesHp << endl;
@@ -329,15 +345,15 @@ int main()
 				}
 			}
 		}
-		if (inputString == PAPER) //2
+		if (inputNum == PAPER) //2
 		{
-			if (randNumber == 2)
+			if (randNumber == PAPER)
 			{
 				cout << "결과 : 비겼습니다." << endl;
 				cout << "다시 입력해 주세요." << endl;
 				cout << endl;
 			}
-			else if (randNumber == 1)
+			else if (randNumber == SCISSORS)
 			{
 				cout << "결과 : 졌습니다." << endl;
 				cout << "현재 남은 체력 : " << --heroesHp << endl;
