@@ -78,33 +78,55 @@
 		}
 
 		이렇게 간단히 처리만 해줘도 프로그램이 터지는 것을 방지할 수 있다.
-
-
-
-
-
+		
 */
-=======
-#include <iostream>
-#include <string>
- 
-using namespace std;
 
-struct Zombie
-{
-	int hp;
-	string name;
-	float speed;
-};
+/*
+	2020.04.06
+	
+	동적할당....
 
-int main()
-{
-	int i = -2;
-	while (i++)
-	{
-		cout << i << ", ";
-	}
+		--> 2차원 배열을 동적할당으로 표현하기.
+		int p[2][3]; 을 동적할당으로!
 
-	return 0;
-}
->>>>>>> a29828e06c006496ed55935c50f167ab0e3b202d:Study/study.cpp
+
+		1) new int*[2]; //메모리 주소를 가리키는 변수 2개를 동적할당.
+
+		2) int** p = new int*[2]; //이러한 변수를 가리킬 포인터를 선언한다. 따라서 이중 포인터가 된다.
+
+		3) for(int i = 0 ; i < 2 ; i++)
+			*(p+i) = new int[3];
+
+		동적할당을 완료하였으므로, 메모리 해제 작업에 들어가야한다. 
+		우리는 2)과 3)에 의해 new키워드를 두 번 사용했고 이 두 번 사용한 부분에 대해 메모리 해제를 진행해줘야 한다.
+
+		4) for(int i = 0 ; i < 2 ; i++)
+			delete[] *(p+i);
+
+		5) delete[] p;
+
+		--> 3차원 배열을 동적할당으로 표현하기.
+		int p[2][3][4];
+
+		1) new int**[2]; //어떠한 메모리 주소를 가리키는 변수를 가리키는 변수 2개를 동적할당.
+
+		2) int*** p = new int**[2]; //이러한 변수를 가리키는 포인터를 선언한다. 따라서 삼중 포인터가 된다.
+
+		3) for(int i = 0 ; i < 2 ; i++)
+				*(p+i) = new int*[3];
+
+		4) for(int i = 0 ; i < 2 ; i++)
+				for(int j=0 ; j < 3 ; j++)
+					*(*(p+1)+j) = new int[4];
+
+		5) for(int i = 0 ; i < 2; i++)
+			for(int j = 0 ; j < 3 ; j++)
+				delete[] *(*(p + i) + j);
+
+		6) for( int i = 0; i < 2 ; i++)
+				delete[] *(p+i);
+
+		7) delete[] p;
+
+					
+*/
