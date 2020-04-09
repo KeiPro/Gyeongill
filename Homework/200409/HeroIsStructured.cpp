@@ -228,7 +228,7 @@ void Settings(Hero* hero, Monster* monster, string monsterName[] ,int area)
 			area -= 10;
 			count++;
 		}
-		monsterCount = (count + 1) * 3;
+		monsterCount = (count + 1) * 3; //밸런스
 	}
 	
 	HeroSetting(hero, count); //히어로 초기화 및 세팅
@@ -250,21 +250,24 @@ void HeroSetting(Hero* hero = nullptr, int count = 0)
 }
 
 //몬스터 세팅함수
-//void MonsterSetting(Monster* monster, string monsterName[], int count)
-//{
-//	for (int i = 0; i < MONSTERSIZE; i++)
-//	{
-//		(monster + i)->monsterName = monsterName[i];
-//		(monster + i)->maxHp = rand() % 2 + 1; //땅 포켓몬은 체력이 1~2가 된다.
-//		(monster + i)->currentHp = (monster + i)->maxHp;
-//		(monster + i)->giveExp = rand() % 100 + 100; //최소 경험치 
-//
-//		if ((i + 1) % 4 == 0)
-//		{
-//
-//		}
-//	}
-//}
+void MonsterSetting(Monster* monster, string monsterName[], int count)
+{
+	//i를 조절하는 것이 아니라 하나 변수 더 선언해서 그녀석으로 밸런스 조절하는걸로??
+	for (int i = 0; i < MONSTERSIZE; i++)
+	{
+		(monster + i)->monsterName = monsterName[i];
+		(monster + i)->tileType = i;
+		(monster + i)->maxHp = (rand() % 3 + (1 + i))+count; //땅 포켓몬은 체력이 1~2가 된다. //
+		(monster + i)->currentHp = (monster + i)->maxHp;
+		(monster + i)->giveExp = (rand() % 100 + 100 + (i*20)) + (count * 50); //최소 경험치 100 //밸런스 조절
+		(monster + i)->giveGold = (rand() % 10 + 10 + (i*5)) + (count + 1) * 2; //최소 골드 획득
+		
+		if ((i + 1) % 4 == 0)
+		{
+
+		}
+	}
+}
 
 void CharacterMove(Hero* hero, char* move, char** map, int width, int height, int* tilePositionSave)
 {
