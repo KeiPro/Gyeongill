@@ -18,6 +18,7 @@
 #include <string>
 #include <Windows.h>
 #include <ctime>
+#include <conio.h>
 
 #define MONSTERSIZE 16
 
@@ -57,13 +58,14 @@ struct Portion
 	int healHp; //회복치
 };
 
-void MapCreate(char** map, int width, int height); //맵 동적할당 함수 원형
+void MapCreate(char** map, int width, int height, int* tilePositionSave); //맵 동적할당 함수 원형
 void MapFree(char** map, int width, int height); //맵을 해제하는 함수 원형
 void Settings(Hero* hero, Monster* monster, string monsterName[], int area); // 히어로와 몬스터를 세팅하기 위한 함수
-
 void HeroSetting(Hero* hero, int count); //히어로를 세팅하기 위해 area값을 넘겨주기 위한 함수
 void MonsterSetting(Monster* monster, string monsterName[], int count); //몬스터를 세팅하기위해 area값을 넘겨주기 위한 함수
 void MapPrint(char** map, int width, int height); //맵 출력 함수
+void CharacterMove(Hero* hero, char* move, char** map, int width, int height, int* tileSavePosition); //캐릭터가 움직임 함수원형
+
 
 int monsterCount = 0; //총 몬스터 마리수 전역변수 설정
 
@@ -71,7 +73,7 @@ int main()
 {
 	srand(time(NULL));
 
-	Hero heroes;
+	Hero hero; 
 	Monster* monster;
 	string monsterName[] = { "모래두지", "닥트리오", "딱구리", "뿔카노", //monsterName[0] ~ monsterName[3] : 땅
 		"수륙챙이", "야도란", "킹크랩", "아쿠스타",					 //monsterName[4] ~ monsterName[7] : 물
@@ -88,13 +90,24 @@ int main()
 	cout << "높이 입력 : ";
 	cin >> height;
 	
+	hero.myXPosition = 0, hero.myYPosition = 0; //나의 위치 초기화
+	int tilePositionSave = 0;
 	char** map = new char*[height]; //2차원 배열 동적할당 하기 위한 이중 포인터 변수
-	MapCreate(map, width, height); //맵 동적할당 함수
+	MapCreate(map, width, height, &tilePositionSave); //맵 동적할당 함수
+
 #pragma region 이 사이에서 게임이 이루어진다.
 
-	Settings( &heroes, monster, monsterName , width * height); //히어로와 몬스터 세팅이 일어나는 함수
+	Settings( &hero, monster, monsterName , width * height); //히어로와 몬스터 세팅 함수
 
-	MapPrint( map, width, height); //맵 출력 함수
+	char move; //움직임을 받는 변수
+
+
+	while (1)
+	{
+		system("cls");
+		MapPrint(map, width, height); //맵 출력 함수
+		CharacterMove(&hero, &move, map, width, height, &tilePositionSave); //캐릭터 움직이는 함수
+	}
 
 #pragma endregion
 	MapFree(map, width, height); //맵 해제 함수
@@ -126,7 +139,7 @@ void MapPrint(char** map, int width, int height)
 }
 
 //맵 동적할당 및 세팅함수
-void MapCreate(char** map, int width, int height)
+void MapCreate(char** map, int width, int height, int* tileSavePosition)
 {
 	for (int i = 0; i < height; i++)
 		*(map + i) = new char[width];
@@ -179,8 +192,8 @@ void MapCreate(char** map, int width, int height)
 		}
 	}
 
+	*tileSavePosition = map[0][0];
 	map[0][0] = 0;
-	
 }
 
 //맵 메모리 해제
@@ -222,6 +235,7 @@ void Settings(Hero* hero, Monster* monster, string monsterName[] ,int area)
 	//MonsterSetting(monster, monsterName, count); //몬스터 초기화 및 세팅
 }
 
+//히어로 세팅 함수
 void HeroSetting(Hero* hero = nullptr, int count = 0)
 {
 	cout << "히어로의 이름을 입력해 주세요 : ";
@@ -235,18 +249,95 @@ void HeroSetting(Hero* hero = nullptr, int count = 0)
 	hero->myXPosition = 0, hero->myYPosition = 0; //영웅의 좌표
 }
 
-void MonsterSetting(Monster* monster, string monsterName[], int count)
+//몬스터 세팅함수
+//void MonsterSetting(Monster* monster, string monsterName[], int count)
+//{
+//	for (int i = 0; i < MONSTERSIZE; i++)
+//	{
+//		(monster + i)->monsterName = monsterName[i];
+//		(monster + i)->maxHp = rand() % 2 + 1; //땅 포켓몬은 체력이 1~2가 된다.
+//		(monster + i)->currentHp = (monster + i)->maxHp;
+//		(monster + i)->giveExp = rand() % 100 + 100; //최소 경험치 
+//
+//		if ((i + 1) % 4 == 0)
+//		{
+//
+//		}
+//	}
+//}
+
+void CharacterMove(Hero* hero, char* move, char** map, int width, int height, int* tilePositionSave)
 {
-	for (int i = 0; i < MONSTERSIZE; i++)
+	*move = _getch();
+	
+	switch (*move)
 	{
-		(monster + i)->monsterName = monsterName[i];
-		(monster + i)->maxHp = rand() % 2 + 1; //땅 포켓몬은 체력이 1~2가 된다.
-		(monster + i)->currentHp = (monster + i)->maxHp;
-		(monster + i)->giveExp = rand() % 100 + 100; //최소 경험치 
+		case 'w':
+			
+			if (hero->myYPosition == 0)
+			{
+				return;
+			}
+			else
+			{
+				map[hero->myYPosition][hero->myXPosition] = *tilePositionSave;
+				hero->myYPosition--;
+				*tilePositionSave = map[hero->myYPosition][hero->myXPosition];
+				map[hero->myYPosition][hero->myXPosition] = 0;
+			}
 
-		if ((i + 1) % 4 == 0)
-		{
+			break;
 
-		}
+		case 'a':
+
+			if (hero->myXPosition == 0)
+			{
+				return;
+			}
+			else
+			{
+				map[hero->myYPosition][hero->myXPosition] = *tilePositionSave;
+				hero->myXPosition--;
+				*tilePositionSave = map[hero->myYPosition][hero->myXPosition];
+				map[hero->myYPosition][hero->myXPosition] = 0;
+			}
+
+			break;
+
+		case 's':
+
+			if (hero->myYPosition == height-1)
+			{
+				return;
+			}
+			else
+			{
+				map[hero->myYPosition][hero->myXPosition] = *tilePositionSave;
+				hero->myYPosition++;
+				*tilePositionSave = map[hero->myYPosition][hero->myXPosition];
+				map[hero->myYPosition][hero->myXPosition] = 0;
+			}
+
+			break;
+
+		case 'd':
+
+			if (hero->myXPosition == width - 1)
+			{
+				return;
+			}
+			else
+			{
+				map[hero->myYPosition][hero->myXPosition] = *tilePositionSave;
+				hero->myXPosition++;
+				*tilePositionSave = map[hero->myYPosition][hero->myXPosition];
+				map[hero->myYPosition][hero->myXPosition] = 0;
+			}
+
+			break;
+		default:
+			break;
+
 	}
+
 }

@@ -84,16 +84,16 @@ int main()
 	Tile tile[4];
 	Hero heroes;
 	
+
+
+
+
+
+
+
 	HeroSetting(&heroes, width * height); //히어로 세팅 함수
-	TileInitializing(tile); //각 타일 타입 초기화
+	TileInitializing(tile); //각 타일의 타입 초기화
 	
-
-
-
-
-
-
-
 
 
 #pragma endregion
