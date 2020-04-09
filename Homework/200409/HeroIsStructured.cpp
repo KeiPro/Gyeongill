@@ -18,7 +18,8 @@
 #include <string>
 #include <Windows.h>
 #include <ctime>
-#define TILESIZE 4
+
+#define MONSTERSIZE 16
 
 enum TILETYPE{ LAND=2 , WATER , FOREST, FLY }; //땅, 바다, 숲, 비행
 
@@ -46,7 +47,6 @@ struct Monster
 	int giveGold; //획득 골드
 	//int properties; //속성
 	int tileType; //몬스터가 생존하고 있는 타일
-	int monsXPosition, monsYPosition; //몬스터의 x, y좌표
 };
 
 //물약 구조체
@@ -59,10 +59,10 @@ struct Portion
 
 void MapCreate(char** map, int width, int height); //맵 동적할당 함수 원형
 void MapFree(char** map, int width, int height); //맵을 해제하는 함수 원형
-void Settings(Hero* hero = nullptr, Monster* monster = nullptr, int area = 0); // 히어로와 몬스터를 세팅하기 위한 함수
+void Settings(Hero* hero, Monster* monster, string monsterName[], int area); // 히어로와 몬스터를 세팅하기 위한 함수
 
 void HeroSetting(Hero* hero, int count); //히어로를 세팅하기 위해 area값을 넘겨주기 위한 함수
-void MonsterSetting(Monster* monster); //몬스터를 세팅하기위해 area값을 넘겨주기 위한 함수
+void MonsterSetting(Monster* monster, string monsterName[], int count); //몬스터를 세팅하기위해 area값을 넘겨주기 위한 함수
 void MapPrint(char** map, int width, int height); //맵 출력 함수
 
 int monsterCount = 0; //총 몬스터 마리수 전역변수 설정
@@ -72,11 +72,13 @@ int main()
 	srand(time(NULL));
 
 	Hero heroes;
-	Monster* monster = nullptr;
+	Monster* monster;
 	string monsterName[] = { "모래두지", "닥트리오", "딱구리", "뿔카노", //monsterName[0] ~ monsterName[3] : 땅
 		"수륙챙이", "야도란", "킹크랩", "아쿠스타",					 //monsterName[4] ~ monsterName[7] : 물
 		"독침붕", "콘팡", "라플레시아", "독파리",						 //monsterNmae[8] ~ monsterName[11] : 숲
 		"망나뇽", "버터플", "리자몽", "갸라도스"};						 //monsterName[12] ~ monsterName[15] : 비행
+	
+	monster = new Monster[MONSTERSIZE];
 	
 	int width;
 	int height;
@@ -90,13 +92,14 @@ int main()
 	MapCreate(map, width, height); //맵 동적할당 함수
 #pragma region 이 사이에서 게임이 이루어진다.
 
-	Settings( &heroes, &monster, width * height); //히어로와 몬스터 세팅이 일어나는 함수
+	Settings( &heroes, monster, monsterName , width * height); //히어로와 몬스터 세팅이 일어나는 함수
 
 	MapPrint( map, width, height); //맵 출력 함수
 
 #pragma endregion
 	MapFree(map, width, height); //맵 해제 함수
 	   	  
+	delete[] monster;
 	return 0;
 }
 
@@ -192,7 +195,7 @@ void MapFree(char** map, int width, int height)
 }
 
 //히어로 및 몬스터를 세팅하는 함수
-void Settings(Hero* hero, Monster** monster, int area)
+void Settings(Hero* hero, Monster* monster, string monsterName[] ,int area)
 {
 	int count = 0;
 
@@ -203,7 +206,7 @@ void Settings(Hero* hero, Monster** monster, int area)
 			area -= 100;
 			count++;
 		}
-		monsterCount = (count + 1) * 20;
+		monsterCount = (count + 1) * 20; //밸런스
 	}
 	else
 	{
@@ -215,10 +218,8 @@ void Settings(Hero* hero, Monster** monster, int area)
 		monsterCount = (count + 1) * 3;
 	}
 	
-	*monster = new Monster[monsterCount];
-
 	HeroSetting(hero, count); //히어로 초기화 및 세팅
-	//MonsterSetting(monster); //몬스터 초기화 및 세팅
+	//MonsterSetting(monster, monsterName, count); //몬스터 초기화 및 세팅
 }
 
 void HeroSetting(Hero* hero = nullptr, int count = 0)
@@ -226,7 +227,7 @@ void HeroSetting(Hero* hero = nullptr, int count = 0)
 	cout << "히어로의 이름을 입력해 주세요 : ";
 	cin >> hero->heroName;
 
-	hero->maxHp = 100 + count * 10; //히어로의 기본 체력은 최소 100의 체력을 가지고 있는다.
+	hero->maxHp = 100 + count * 10; //히어로의 기본 체력은 최소 100의 체력을 가지고 있는다. 
 	hero->currentHp = hero->maxHp; //세팅 시에는 현재 체력이 맥스 체력이어야 한다.
 	hero->maxExp = 1000 + count * 200;  //최소 경험치 : 1000 설정
 	hero->currentExp = 0; //현재 경험치
@@ -234,12 +235,18 @@ void HeroSetting(Hero* hero = nullptr, int count = 0)
 	hero->myXPosition = 0, hero->myYPosition = 0; //영웅의 좌표
 }
 
-void MonsterSetting(Monster* monster = nullptr)
+void MonsterSetting(Monster* monster, string monsterName[], int count)
 {
-	int tmp = monsterCount;
-
-	for (int i = 0; i < tmp; i++)
+	for (int i = 0; i < MONSTERSIZE; i++)
 	{
-		
+		(monster + i)->monsterName = monsterName[i];
+		(monster + i)->maxHp = rand() % 2 + 1; //땅 포켓몬은 체력이 1~2가 된다.
+		(monster + i)->currentHp = (monster + i)->maxHp;
+		(monster + i)->giveExp = rand() % 100 + 100; //최소 경험치 
+
+		if ((i + 1) % 4 == 0)
+		{
+
+		}
 	}
 }
