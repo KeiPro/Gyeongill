@@ -2,7 +2,7 @@
 #include "pch.h"
 #include "GameNode.h"
 
-class Tank;
+class MainGame; //Enemy의 정보에 접근하기 위해 설정.
 class Missile : public GameNode
 {
 private:
@@ -12,10 +12,10 @@ private:
 	float speed;
 	bool isFire;
 	bool isPosition;
-	bool isActive;
 
 public:
 
+	MainGame* mainGame;
 	virtual HRESULT Init();
 	virtual void Release();
 	virtual void Update();
@@ -25,12 +25,12 @@ public:
 	void SetAngle(float _angle) { angle = _angle; }
 	void SetIsFire(bool _isFire) { isFire = _isFire; }
 	void SetIsPosition(bool _isPosition) { isPosition = _isPosition; }
-	//void SetIsActive(bool _isActive) { isActive = _isActive; }
+	void SetMainGame(MainGame* _mainGame) { mainGame = _mainGame; }
 
 	POINT GetPos() { return pos; }
 	bool GetIsFire() { return isFire; }
 	bool GetIsPosition() { return isPosition; }
-	//bool GetIsActive() { return isActive; }
+	MainGame* GetMainGame() { return mainGame; }
 
 
 	Missile();

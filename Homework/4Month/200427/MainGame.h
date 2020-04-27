@@ -24,6 +24,8 @@ public:
 	virtual void Update();
 	virtual void Render(HDC hdc);
 	
+	Enemy* GetEnemy() { return enemy; }
+	Tank* GetTank() { return tank; }
 
 	LRESULT MainProc(HWND hWnd, UINT iMessage,
 		WPARAM wParam, LPARAM lParam);

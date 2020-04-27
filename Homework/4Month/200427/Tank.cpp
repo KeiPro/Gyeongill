@@ -95,10 +95,10 @@ void Tank::Fire(/*int missileIndex*/)
 		if (missile[i].GetIsFire() == false)
 		{
 			missile[i].SetIsFire(true);
+			missile[i].SetMainGame(GetMainGame());
 			break;
 		}
 	}
-
 
 	/*if (missile)
 	{

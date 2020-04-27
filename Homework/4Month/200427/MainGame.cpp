@@ -10,15 +10,16 @@ HRESULT MainGame::Init()
 	// ÅÊÅ©
 	tank = new Tank();
 	tank->Init();
+	tank->SetMainGame(this);
 
 	// Enemy
 	enemy = new Enemy[ENEMYCOUNT];
 	for (int i = 0; i < ENEMYCOUNT; i++)
 	{
+		enemy[i].SetMainGame(this);
 		enemy[i].Init();
 		enemy[i].SetTankPos(tank->GetTankPosition());
 	}
-
 
 	return S_OK;
 }
@@ -98,11 +99,6 @@ LRESULT MainGame::MainProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lPara
 		case VK_SPACE:
 
 			tank->Fire();
-
-			/*if (tank->GetMissileNum() < tank->GetMaxMissile());
-			{
-				tank->Fire(tank->GetMissileNum());
-			}*/
 
 			break;
 		case VK_ESCAPE:

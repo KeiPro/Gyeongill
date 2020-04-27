@@ -2,6 +2,7 @@
 #include "pch.h"
 #include "GameNode.h"
 
+class MainGame;
 class Enemy : public GameNode
 {
 private:
@@ -11,7 +12,8 @@ private:
 	float directionX, directionY;
 	float sqrtValue;
 	int speed;
-
+	int size;
+	MainGame* mainGame;
 
 public:
 
@@ -20,6 +22,12 @@ public:
 	virtual void Update();		
 	virtual void Render(HDC hdc);
 
+
+	int GetMySize() { return size; }
+	POINT GetMyPos() { return myPos; }
+	MainGame* GetMainGame() { return mainGame; }
+
 	void SetTankPos(POINT _tankPos) { tankPos = _tankPos; }
+	void SetMainGame(MainGame* _mainGame) { mainGame = _mainGame; }
 
 };

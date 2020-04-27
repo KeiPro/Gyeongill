@@ -2,6 +2,14 @@
 #pragma once
 #include "pch.h"
 
+inline bool CheckCircleCollision(int centerX1, int centerY1, int radius1 , int centerX2, int centerY2, int radius2)
+{
+	if (sqrt(pow((centerX2 - centerX1), 2) + pow((centerY2 - centerY1), 2)) <= radius1 + radius2)
+		return true;
+
+	return false;
+}
+
 inline void RenderLine(HDC hdc, int startX, int startY, int endX, int endY)
 {
 	MoveToEx(hdc, startX, startY, NULL);

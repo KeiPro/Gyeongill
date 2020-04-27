@@ -1,5 +1,7 @@
 #include "Missile.h"
 #include "macroFunction.h"
+#include "MainGame.h"
+#include "Enemy.h"
 
 LRESULT Missile::Init()
 {
@@ -10,7 +12,6 @@ LRESULT Missile::Init()
 	speed = 10.0f;
 	isFire = false;
 	isPosition = false;
-	//isActive = false;
 
 	return S_OK;
 }
@@ -26,6 +27,20 @@ void Missile::Update()
 	{
 		pos.x += speed * cosf(angle);
 		pos.y -= speed * sinf(angle);
+
+		if (pos.x > WINSIZE_X || pos.x < 0 || pos.y < 0 || pos.y > WINSIZE_Y)
+		{
+			this->Init();
+		}
+
+		for (int i = 0; i < ENEMYCOUNT; i++)
+		{
+			if (CheckCircleCollision(pos.x, pos.y, size, (mainGame->GetEnemy())[i].GetMyPos().x, (mainGame->GetEnemy())[i].GetMyPos().y, (mainGame->GetEnemy())[i].GetMySize()) == true)
+			{
+				this->Init();
+				(mainGame->GetEnemy())[i].Init();
+			}
+		}
 	}
 }
 

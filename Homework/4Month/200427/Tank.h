@@ -2,6 +2,7 @@
 #include "GameNode.h"
 
 class Missile;
+class MainGame;
 class Tank
 {
 private:
@@ -16,6 +17,7 @@ private:
 								//		: radian    0.0 ~ PI * 2 ( 3.141592 ...... )
 
 	Missile* missile;
+	MainGame* mainGame;
 	int maxMissile;
 	int missileNum;
 
@@ -31,11 +33,13 @@ public:
 	void SetBarrelAngle(float angle) { barrelAngle = angle; }
 	void SetMaxMissile(int _missile) { maxMissile = _missile; }
 	void SetMissileNum(int _missileNum) { missileNum = _missileNum; }
+	void SetMainGame(MainGame* _mainGame) { mainGame = _mainGame; }
 
 	float GetBarrelAngle() { return barrelAngle; }
 	POINT GetTankPosition() { return center; }
 	int GetMaxMissile() { return maxMissile; }
 	int GetMissileNum() { return missileNum; }	
+	MainGame* GetMainGame() { return mainGame; }
 
 	Tank();
 	~Tank();
