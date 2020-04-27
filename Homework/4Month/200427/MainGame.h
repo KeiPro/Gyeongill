@@ -2,7 +2,7 @@
 #include "GameNode.h"
 
 class Tank;
-class Missile;
+class Enemy;
 class MainGame : public GameNode
 {
 private:
@@ -16,7 +16,7 @@ private:
 	RECT rc[BOX_End], rcIn;
 
 	Tank* tank;
-	Missile* missile;
+	Enemy* enemy;
 
 public:
 	virtual HRESULT Init();

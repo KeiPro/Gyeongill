@@ -16,6 +16,8 @@ private:
 								//		: radian    0.0 ~ PI * 2 ( 3.141592 ...... )
 
 	Missile* missile;
+	int maxMissile;
+	int missileNum;
 
 
 public:
@@ -24,12 +26,16 @@ public:
 	virtual void Update();	
 	virtual void Render(HDC hdc);
 
-	void Fire();
+	void Fire(/*int missileIndex*/);
 
 	void SetBarrelAngle(float angle) { barrelAngle = angle; }
+	void SetMaxMissile(int _missile) { maxMissile = _missile; }
+	void SetMissileNum(int _missileNum) { missileNum = _missileNum; }
 
 	float GetBarrelAngle() { return barrelAngle; }
 	POINT GetTankPosition() { return center; }
+	int GetMaxMissile() { return maxMissile; }
+	int GetMissileNum() { return missileNum; }	
 
 	Tank();
 	~Tank();

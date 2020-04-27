@@ -1,7 +1,7 @@
 #include "MainGame.h"
 #include "macroFunction.h"
 #include "Tank.h"
-#include "Missile.h"
+#include "Enemy.h"
 
 HRESULT MainGame::Init()
 {
@@ -11,14 +11,23 @@ HRESULT MainGame::Init()
 	tank = new Tank();
 	tank->Init();
 
+	// Enemy
+	enemy = new Enemy[ENEMYCOUNT];
+	for (int i = 0; i < ENEMYCOUNT; i++)
+	{
+		enemy[i].Init();
+		enemy[i].SetTankPos(tank->GetTankPosition());
+	}
+
+
 	return S_OK;
 }
 
 void MainGame::Release()
 {
 	delete tank;
-	delete missile;
-
+	delete[] enemy;
+	
 	KillTimer(g_hWnd, 0);
 }
 
@@ -29,6 +38,13 @@ void MainGame::Update()
 		tank->Update();
 	}
 
+	if (enemy)
+	{
+		for (int i = 0; i < ENEMYCOUNT; i++)
+		{
+			enemy[i].Update();
+		}
+	}
 
 	InvalidateRect(g_hWnd, NULL, true);
 }
@@ -40,6 +56,14 @@ void MainGame::Render(HDC hdc)
 		tank->Render(hdc);	
 	}
 
+	if (enemy)
+	{
+		for (int i = 0; i < ENEMYCOUNT; i++)
+		{
+			enemy[i].Render(hdc);
+		}
+	}
+
 }
 
 LRESULT MainGame::MainProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)
@@ -47,7 +71,7 @@ LRESULT MainGame::MainProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lPara
 	HDC hdc;
 	PAINTSTRUCT ps;
 
-	switch (iMessage)
+ 	switch (iMessage)
 	{
 	case WM_TIMER:
 		this->Update();
@@ -73,7 +97,12 @@ LRESULT MainGame::MainProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lPara
 
 		case VK_SPACE:
 
-			tank->Fire();			
+			tank->Fire();
+
+			/*if (tank->GetMissileNum() < tank->GetMaxMissile());
+			{
+				tank->Fire(tank->GetMissileNum());
+			}*/
 
 			break;
 		case VK_ESCAPE:

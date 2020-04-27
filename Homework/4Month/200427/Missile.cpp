@@ -1,20 +1,23 @@
 #include "Missile.h"
 #include "macroFunction.h"
 
-HRESULT Missile::Init()
+LRESULT Missile::Init()
 {
 	pos.x = 0;
 	pos.y = 0;
 	size = 10;
 	angle = PI / 2.0f;
-	speed = 5.0f;
+	speed = 10.0f;
 	isFire = false;
+	isPosition = false;
+	//isActive = false;
 
 	return S_OK;
 }
 
 void Missile::Release()
 {
+
 }
 
 void Missile::Update()
@@ -23,7 +26,6 @@ void Missile::Update()
 	{
 		pos.x += speed * cosf(angle);
 		pos.y -= speed * sinf(angle);
-		//SetIsFire(false);
 	}
 }
 
@@ -35,6 +37,11 @@ void Missile::Render(HDC hdc)
 	}
 }
 
+
+Missile::Missile()
+{
+
+}
 
 Missile::~Missile()
 {

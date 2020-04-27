@@ -32,6 +32,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT iMessage,
 int APIENTRY WinMain(HINSTANCE _hInstance, HINSTANCE _hPrevInstance,
 		LPSTR _lpszCmdParam, int nCmdShow)
 {
+	srand(time(NULL));
 	// 윈도우 생성을 위한 기본셋팅
 	g_hInstance = _hInstance;
 	WNDCLASS wndClass;

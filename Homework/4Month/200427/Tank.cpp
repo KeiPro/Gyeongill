@@ -15,6 +15,9 @@ HRESULT Tank::Init()
 
 	barrelAngle = PI / 4.0f ;
 
+	maxMissile = 5;
+	missileNum = 0;
+
 	return S_OK;
 }
 
@@ -31,9 +34,37 @@ void Tank::Update()
 	//미사일 위치 업데이트
 	if (missile)
 	{
-		missile->SetPos(barrelEnd);
-		missile->SetAngle(barrelAngle);
-		missile->Update();
+		for (int i = 0; i < maxMissile; i++)
+		{
+			if (missile[i].GetIsFire() == true)
+			{
+				if (missile[i].GetIsPosition() == false)
+				{
+					missile[i].SetPos(barrelEnd);
+					missile[i].SetAngle(barrelAngle);
+					missile[i].SetIsPosition(true);
+				}
+				else
+				{
+					missile[i].Update();
+				}
+			}
+			
+			//if (missile[i].GetIsFire())
+			//{
+			//	if (missile[i].GetIsPosition() == false)
+			//	{
+			//		missile[i].SetPos(barrelEnd);
+			//		missile[i].SetAngle(barrelAngle);
+			//		missile[i].SetIsPosition(true);
+			//	}
+			//	else
+			//	{
+			//		missile[i].Update();
+			//	}
+			//}
+		}
+		
 	}
 }
 
@@ -47,26 +78,46 @@ void Tank::Render(HDC hdc)
 
 	if (missile)
 	{
-		missile->Render(hdc);
+		for (int i = 0; i < maxMissile; i++)
+		{
+			if (missile[i].GetIsFire() == true)
+			{
+				missile[i].Render(hdc);
+			}
+		}
 	}
 }
 
-void Tank::Fire()
+void Tank::Fire(/*int missileIndex*/)
 {
-	if (missile)
+	for (int i = 0; i < maxMissile; i++)
 	{
-		missile->SetIsFire(true);
+		if (missile[i].GetIsFire() == false)
+		{
+			missile[i].SetIsFire(true);
+			break;
+		}
 	}
+
+
+	/*if (missile)
+	{
+		missile[missileIndex].SetIsFire(true);
+
+	}*/
 }
 
 Tank::Tank()
 {
-	missile = new Missile();
-	missile->Init();
+	missile = new Missile[5];
+	for (int i = 0; i < 5; i++)
+	{
+		missile[i].Init();
+	}
 }
 
 Tank::~Tank()
 {
-	delete missile;
+	delete[] missile;
 }
 
