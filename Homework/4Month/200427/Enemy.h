@@ -6,8 +6,8 @@ class MainGame;
 class Enemy : public GameNode
 {
 private:
-	POINT myPos;
-	POINT tankPos;
+	FloatPosition myPos;
+	FloatPosition tankPos;
 	float normalVectorX, normalVectorY;
 	float directionX, directionY;
 	float sqrtValue;
@@ -24,10 +24,10 @@ public:
 
 
 	int GetMySize() { return size; }
-	POINT GetMyPos() { return myPos; }
+	FloatPosition GetMyPos() { return myPos; }
 	MainGame* GetMainGame() { return mainGame; }
 
-	void SetTankPos(POINT _tankPos) { tankPos = _tankPos; }
+	void SetTankPos(FloatPosition _tankPos) { tankPos = _tankPos; }
 	void SetMainGame(MainGame* _mainGame) { mainGame = _mainGame; }
 
 };

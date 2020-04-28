@@ -6,13 +6,13 @@ class MainGame;
 class Tank
 {
 private:
-	POINT center;
+	FloatPosition center;
 	//int x, y;		// 위치 좌표
 	// 몸통
 	int bodySize;
 
 	// 포신
-	POINT barrelEnd;
+	FloatPosition barrelEnd;
 	float barrelAngle;			// 단위 : degree(도) 0 ~ 360
 								//		: radian    0.0 ~ PI * 2 ( 3.141592 ...... )
 
@@ -36,7 +36,7 @@ public:
 	void SetMainGame(MainGame* _mainGame) { mainGame = _mainGame; }
 
 	float GetBarrelAngle() { return barrelAngle; }
-	POINT GetTankPosition() { return center; }
+	FloatPosition GetTankPosition() { return center; }
 	int GetMaxMissile() { return maxMissile; }
 	int GetMissileNum() { return missileNum; }	
 	MainGame* GetMainGame() { return mainGame; }

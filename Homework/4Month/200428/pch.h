@@ -2,7 +2,9 @@
 
 #include <Windows.h>
 #include <math.h>
-#include <ctime>
+#include "KeyManager.h"
+
+
 
 // enum, struct, .h, #define
 enum BOX
@@ -18,19 +20,11 @@ enum BOX
 #define WINSTART_Y	50
 
 #define PI			3.141592
-#define ENEMYCOUNT  5
 
 extern HWND g_hWnd;
 
-struct FloatPosition
+typedef struct tagFPOINT
 {
 	float x;
 	float y;
-};
-
-
-//typedef struct tagFPOINT
-//{
-//	float x;
-//	float y;
-//}FPOINT, *PPOINT;
+}FPOINT;
