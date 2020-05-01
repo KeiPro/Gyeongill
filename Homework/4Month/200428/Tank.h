@@ -5,7 +5,7 @@ class Missile;
 class Tank
 {
 private:
-	POINT center;
+	FPOINT center;
 	//int x, y;		// À§Ä¡ ÁÂÇ¥
 	// ¸öÅë
 	int bodySize;
@@ -16,6 +16,7 @@ private:
 								//		: radian    0.0 ~ PI * 2 ( 3.141592 ...... )
 	Missile* missile;
 	int missileMaxCount;
+	int shootTimer;
 
 public:
 	virtual HRESULT Init();
@@ -28,7 +29,11 @@ public:
 	void SetBarrelAngle(float angle) { barrelAngle = angle; }
 
 	float GetBarrelAngle() { return barrelAngle; }
-	POINT GetTankPosition() { return center; }
+	FPOINT GetTankPosition() { return center; }
+	Missile* GetMissile( ) { return missile; }
+	int GetMissileMaxCount() { return missileMaxCount; }
+	Missile* GetMissileDatas() { return missile; }
+
 
 	Tank();
 	~Tank();

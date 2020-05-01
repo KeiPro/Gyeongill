@@ -1,5 +1,7 @@
 #pragma once
 #include "GameNode.h"
+#include "Missile.h"
+#include "Enemy.h"
 
 class Tank;
 class Missile;
@@ -16,7 +18,9 @@ private:
 	RECT rc[BOX_End], rcIn;
 
 	Tank* tank;
-	Missile* missile;
+	Enemy* enemy;
+	int timer;
+	//Missile* missile;
 
 public:
 	virtual HRESULT Init();
@@ -27,6 +31,11 @@ public:
 
 	LRESULT MainProc(HWND hWnd, UINT iMessage,
 		WPARAM wParam, LPARAM lParam);
+
+	float GetDistance(float x1, float y1, float x2, float y2);
+	bool CheckCollision(Missile* m1, Missile* m2);
+	float GetAngle(float x1, float y1, float x2, float y2);
+	Tank* GetTank() { return tank; }
 
 	MainGame();
 	~MainGame();
