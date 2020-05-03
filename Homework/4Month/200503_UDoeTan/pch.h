@@ -19,7 +19,7 @@ enum BOX
 #define WINSTART_Y	50
 
 #define PI			3.141592
-#define ENEMYCOUNT 5
+//#define ENEMYCOUNT 5
 
 extern HWND g_hWnd;
 

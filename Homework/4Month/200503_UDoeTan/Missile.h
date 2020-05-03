@@ -17,6 +17,7 @@ private:
 	Enemy* minEnemy;
 	float tmpAngle;
 	int targetTimer;
+	HPEN hPen, hOldPen;
 
 public:
 
@@ -38,7 +39,7 @@ public:
 
 	FPOINT GetPos() { return pos; }
 	bool GetIsFire() { return isFire; }
-	float GetSize() { return size; }
+	float GetSize() { return  (float)size; }
 	float GetSpeed() { return speed; }
 	float GetAngle() { return angle; }
 	//MainGame* GetMainGame() { return mainGame; }

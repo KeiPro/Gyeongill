@@ -19,6 +19,10 @@ private:
 	Missile* missile;
 	MainGame* mainGame;
 	int missileMaxCount;
+	int enemyCount;
+
+
+
 	int shootTimer;
 	int shootCount; // 유도탄활용변수
 	float minEnemyDistance;
@@ -42,6 +46,7 @@ public:
 	void SetMinDistance(float _minEnemyDistance) { minEnemyDistance = _minEnemyDistance; }
 	void SetEnemy(Enemy* _enemy) { enemy = _enemy; }
 	void SetMinEnemy(Enemy* _enemy) { minEnemy = _enemy; }
+	void SetEnemyCount(int _enemyCount) { enemyCount = _enemyCount; }
 	
 
 

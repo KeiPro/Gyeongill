@@ -14,7 +14,7 @@ HRESULT Tank::Init()
 	barrelEnd.x = WINSIZE_X / 2;
 	barrelEnd.y = center.y - 150;
 
-	barrelAngle = PI / 4.0f ;
+	barrelAngle = (float)(PI / 4.0f) ;
 	shootTimer = 0; // 30프레임에 한 번씩.
 	
 	return S_OK;
@@ -22,6 +22,7 @@ HRESULT Tank::Init()
 
 void Tank::Release()
 {
+
 }
 
 void Tank::Update()
@@ -29,11 +30,11 @@ void Tank::Update()
 	// 탱크의 키입력을 처리한다.
 	if (KeyManager::GetSingleton()->IsStayKeyDown(VK_LEFT))
 	{
-		barrelAngle += (PI / 180 * 3);
+		barrelAngle += (float)(PI / 180 * 3);
 	}
 	else if (KeyManager::GetSingleton()->IsStayKeyDown(VK_RIGHT))
 	{
-		barrelAngle -= (PI / 180 * 3);
+		barrelAngle -= (float)(PI / 180 * 3);
 	}
 
 	//if (KeyManager::GetSingleton()->IsStayKeyDown(VK_SPACE))
@@ -70,39 +71,16 @@ void Tank::Update()
 		}
 	}
 
-	if ( enemy != NULL)
-	{
-		for (int i = 0; i < ENEMYCOUNT; i++) 
-		{
-			tmpDistance = GetDistance(center.x, center.y, enemy[i].GetMyPos().x, enemy[i].GetMyPos().y);
-
-			if (minEnemyDistance == -1)
-			{
-				minEnemyDistance = tmpDistance;
-				tmpEnemy = &(enemy[i]);
-			}
-			else
-			{
-				if (minEnemyDistance > tmpDistance) //현재 계산한 위치보다 더 작은 위치가 존재한다면 그 위치를 저장한다.
-				{
-					minEnemyDistance = tmpDistance;
-					tmpEnemy = &(enemy[i]);
-				}
-			}
-		}
-
-		minEnemyDistance = -1;
-		minEnemy = tmpEnemy;
-	}
+	
 }
 
 void Tank::Render(HDC hdc)
 {
 	// 몸통
-	RenderEllipseToCenter(hdc, center.x, center.y, bodySize, bodySize);
+	RenderEllipseToCenter(hdc, (int)center.x, (int)center.y, (int)bodySize, (int)bodySize);
 
 	// 포신
-	RenderLine(hdc, center.x, center.y, barrelEnd.x, barrelEnd.y);
+	RenderLine(hdc, (int)center.x, (int)center.y, (int)barrelEnd.x, (int)barrelEnd.y);
 
 	if (missile)
 	{
@@ -125,6 +103,37 @@ void Tank::Fire()
 				shootCount++;
 				if (shootCount % 3 == 0)
 				{
+					//////////////이 부분?????
+					//에네미의 거리 계산이 되기 전에 SetMinEnemy를 처리하지 못하고, 윈도우 바깥에 있는 녀석을 계속 가리키고 있는 느낌이 든다.
+					//시간이 지난 후 3번 쏴보면 올바른 녀석을 향해 간다.
+
+					if (enemy != NULL)
+					{
+						for (int i = 0; i < enemyCount; i++)
+						{
+							if (enemy[i].GetShootDown() == true) continue;
+
+							tmpDistance = GetDistance(center.x, center.y, enemy[i].GetMyPos().x, enemy[i].GetMyPos().y);
+
+							if (minEnemyDistance == -1)
+							{
+								minEnemyDistance = tmpDistance;
+								tmpEnemy = &(enemy[i]);
+							}
+							else
+							{
+								if (minEnemyDistance > tmpDistance) //현재 계산한 위치보다 더 작은 위치가 존재한다면 그 위치를 저장한다.
+								{
+									minEnemyDistance = tmpDistance;
+									tmpEnemy = &(enemy[i]);
+								}
+							}
+						}
+
+						minEnemyDistance = -1;
+						minEnemy = tmpEnemy;
+					}
+
 					missile[i].SetUDoeTan(true);
 					missile[i].SetMinEnemy(minEnemy);
 					shootCount = 0;
@@ -138,7 +147,7 @@ void Tank::Fire()
 	}
 }
 
-Tank::Tank() : missileMaxCount(5), shootCount(0), minEnemyDistance(-1)
+Tank::Tank() : missileMaxCount(1), shootCount(0), minEnemyDistance(-1)
 {
 	missile = new Missile[missileMaxCount];
 	for (int i = 0; i < missileMaxCount; i++)

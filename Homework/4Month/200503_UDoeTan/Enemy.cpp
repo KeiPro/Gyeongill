@@ -13,6 +13,7 @@ HRESULT Enemy::Init()
 	sqrtValue = 0;
 	speed = rand()%3+1;
 	size = 50;
+	shootDown = false;
 
 	return S_OK;
 }
@@ -23,7 +24,14 @@ void Enemy::Release()
 
 void Enemy::Update()
 {
+	if (shootDown == true)
+	{
+		myPos.x = 300;
+		myPos.y = -1200;
 
+		return;
+	}
+		
 	directionX = tankPos.x - myPos.x;
 	directionY = tankPos.y - myPos.y;
 	sqrtValue = directionX * directionX + directionY * directionY;
@@ -33,10 +41,12 @@ void Enemy::Update()
 
 	myPos.x += normalVectorX * speed;
 	myPos.y += normalVectorY * speed;
-
 }
 
 void Enemy::Render(HDC hdc)
 {
+	if (shootDown == true)
+		return;
+
 	RenderEllipseToCenter(hdc, myPos.x, myPos.y, size, size);
 }

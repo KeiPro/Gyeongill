@@ -13,6 +13,8 @@ private:
 	float sqrtValue;
 	int speed;
 	int size;
+	bool shootDown;
+
 	MainGame* mainGame;
 
 public:
@@ -26,8 +28,10 @@ public:
 	int GetMySize() { return size; }
 	FPOINT GetMyPos() { return myPos; }
 	MainGame* GetMainGame() { return mainGame; }
+	bool GetShootDown() { return shootDown; }
 
 	void SetTankPos(FPOINT _tankPos) { tankPos = _tankPos; }
 	void SetMainGame(MainGame* _mainGame) { mainGame = _mainGame; }
+	void SetShootDown(bool _shootDown) { shootDown = _shootDown; }
 
 };

@@ -13,13 +13,15 @@ private:
 
 	HPEN hPen, hOldPen, hGreenPen;
 	HBRUSH hBrush, hOldBrush;
-
-	BOX currentBox;
-	RECT rc[BOX_End], rcIn;
-
+	
+	
 	Tank* tank;
 	Enemy* enemy;
 	int timer;
+	int stage; int score; char szText[128];
+	int enemyCount;
+	int shootDownCount;
+	bool stageUpdate;
 	
 public:
 	virtual HRESULT Init();
@@ -27,7 +29,6 @@ public:
 	virtual void Update();
 	virtual void Render(HDC hdc);
 	
-
 	LRESULT MainProc(HWND hWnd, UINT iMessage,
 		WPARAM wParam, LPARAM lParam);
 

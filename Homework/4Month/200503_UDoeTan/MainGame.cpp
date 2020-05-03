@@ -8,20 +8,18 @@ HRESULT MainGame::Init()
 	KeyManager::GetSingleton()->Init(); //이 시점에서 static변수에 메모리 할당이 된다.
 
 	hTimer = (HANDLE)SetTimer(g_hWnd, 0, 10, NULL);
-	
+	stage = 1;
+	score = 0;
+	enemyCount = 5;
+	shootDownCount = 0;
+
+	enemy = new Enemy[enemyCount];
 	// 탱크
 	tank = new Tank();
 	tank->SetMainGame(this);
 	tank->Init();
-
-	enemy = new Enemy[ENEMYCOUNT];
-	tank->SetEnemy(enemy);
-	for (int i = 0; i < ENEMYCOUNT; i++)
-	{
-		enemy[i].SetMainGame(this);
-		enemy[i].Init();
-		enemy[i].SetTankPos(tank->GetTankPosition());
-	}
+	stageUpdate = false;
+	
 
 	return S_OK;
 }
@@ -30,6 +28,7 @@ HRESULT MainGame::Init()
 void MainGame::Release()
 {
 	delete tank;
+	delete[] enemy;
 	//delete missile;
 
 	KillTimer(g_hWnd, 0);
@@ -40,6 +39,29 @@ void MainGame::Release()
 
 void MainGame::Update()
 {
+	if (stageUpdate == false)
+	{
+		tank->SetEnemy(enemy);
+		tank->SetEnemyCount(enemyCount);
+		for (int i = 0; i < enemyCount; i++)
+		{
+			enemy[i].SetMainGame(this);
+			enemy[i].Init();
+			enemy[i].SetTankPos(tank->GetTankPosition());
+		}
+
+		stageUpdate = true;
+	}
+
+	if (enemy)
+	{
+		for (int i = 0; i < enemyCount; i++)
+		{
+			enemy[i].Update();
+		}
+	}
+	
+
 	if (tank)
 	{
 		tank->Update();
@@ -57,7 +79,7 @@ void MainGame::Update()
 
 			if (missile->GetIsFire() == true)
 			{
-				for (int j = 0; j < ENEMYCOUNT; j++)
+				for (int j = 0; j < enemyCount; j++)
 				{
 					_enemy = &(enemy[j]);
 
@@ -65,6 +87,8 @@ void MainGame::Update()
 
 					if ( CheckCollision(missile, _enemy) ) //충돌이 일어났을 때
 					{
+						_enemy->SetShootDown(true);
+						
 						missile->SetIsFire(false);
 						if (missile->GetUDoeTan() == true) 
 						{ 
@@ -74,7 +98,19 @@ void MainGame::Update()
 							missile->SetTmpAngle(0.0f);
 							missile->SetTargetTimer(0);
 						}
-						_enemy->Init();
+						
+						score += 10;
+						shootDownCount++;
+						if (shootDownCount == enemyCount)
+						{
+							shootDownCount = 0;
+							enemyCount++;
+							stage++;
+							stageUpdate = false;
+							delete[] enemy;
+							enemy = new Enemy[enemyCount];
+							
+						}
 					}
 				}
 			}
@@ -85,8 +121,6 @@ void MainGame::Update()
 #pragma region 미사일끼리의 충돌
 		//Missile* m1, *m2;
 		//float angle;
-
-
 
 		//for (int i = 0; i < tank->GetMissileMaxCount() - 1; i++)
 		//{
@@ -137,20 +171,6 @@ void MainGame::Update()
 		//	}
 		//}
 #pragma endregion
-
-
-	}
-
-	timer++;
-
-	if (enemy)
-	{
-		for (int i = 0; i < ENEMYCOUNT; i++)
-		{
-
-			enemy[i].Update();
-
-		}
 	}
 
 	InvalidateRect(g_hWnd, NULL, true);
@@ -158,6 +178,11 @@ void MainGame::Update()
 
 void MainGame::Render(HDC hdc)
 {	
+	wsprintf(szText, "Stage : %d", stage);
+	TextOut(hdc, 20, 20, szText, strlen(szText));
+	wsprintf(szText, "Score : %d", score);
+	TextOut(hdc, 20, 40, szText, strlen(szText));
+
 	if (tank)
 	{
 		tank->Render(hdc);	
@@ -165,8 +190,7 @@ void MainGame::Render(HDC hdc)
 		
 	if (enemy)
 	{
-		
-		for (int i = 0; i < ENEMYCOUNT; i++)
+		for (int i = 0; i < enemyCount; i++)
 		{
 			if (&(enemy[i]) == tank->GetMinEnemy())
 			{
@@ -274,8 +298,8 @@ bool MainGame::CheckCollision(Missile* m1, Missile* m2)
 
 bool MainGame::CheckCollision(Missile* _missile, Enemy* enemy)
 {
-	float halfSize1 = _missile->GetSize() / 2;
-	float halfSize2 = enemy->GetMySize() / 2;
+	float halfSize1 = _missile->GetSize() / 2.0f;
+	float halfSize2 = enemy->GetMySize() / 2.0f;
 	FPOINT pos1 = _missile->GetPos();
 	FPOINT pos2 = enemy->GetMyPos();
 

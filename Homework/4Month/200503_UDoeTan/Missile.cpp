@@ -1,13 +1,14 @@
 #include "Missile.h"
 #include "macroFunction.h"
 #include "Enemy.h"
+#include <Windows.h>
 
 HRESULT Missile::Init()
 {
 	pos.x = 0;
 	pos.y = 0;
 	size = 20;
-	angle = PI / 2.0f;
+	angle = (float)(PI / 2.0f);
 	speed = 10.0f;
 	tmpSpeed = 5.0f;
 	isFire = false;
@@ -119,12 +120,16 @@ void Missile::Render(HDC hdc)
 {
 	if (isFire)
 	{
-		RenderEllipseToCenter(hdc, pos.x, pos.y, size, size);
+		RenderEllipseToCenter(hdc, (int)pos.x, (int)pos.y, size, size);
 
-		if (minEnemy != NULL)
+		if ( ( minEnemy != NULL ) && ( targetTimer >= 20 ) )
 		{
-			MoveToEx(hdc, pos.x, pos.y, NULL);
-			LineTo(hdc, minEnemy->GetMyPos().x, minEnemy->GetMyPos().y);
+			hPen = CreatePen(PS_DOT, 1, RGB(0, 0, 255));
+			hOldPen = (HPEN)SelectObject(hdc, hPen);
+			MoveToEx(hdc, (int)pos.x, (int)pos.y, NULL);
+			LineTo(hdc, (int)(minEnemy->GetMyPos().x), (int)(minEnemy->GetMyPos().y));
+			SelectObject(hdc, hOldPen);
+			DeleteObject(hPen);
 		}
 	}
 }
