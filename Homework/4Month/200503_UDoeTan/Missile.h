@@ -18,6 +18,8 @@ private:
 	float tmpAngle;
 	int targetTimer;
 	HPEN hPen, hOldPen;
+	float x1, y1;
+	char szText[128];
 
 public:
 

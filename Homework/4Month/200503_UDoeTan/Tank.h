@@ -4,7 +4,7 @@
 class Missile;
 class MainGame;
 class Enemy;
-class Tank
+class Tank 
 {
 private:
 	FPOINT center;
@@ -20,8 +20,6 @@ private:
 	MainGame* mainGame;
 	int missileMaxCount;
 	int enemyCount;
-
-
 
 	int shootTimer;
 	int shootCount; // 유도탄활용변수
@@ -48,8 +46,6 @@ public:
 	void SetMinEnemy(Enemy* _enemy) { minEnemy = _enemy; }
 	void SetEnemyCount(int _enemyCount) { enemyCount = _enemyCount; }
 	
-
-
 	float GetBarrelAngle() { return barrelAngle; }
 	FPOINT GetTankPosition() { return center; }
 	Missile* GetMissile( ) { return missile; }
@@ -59,7 +55,6 @@ public:
 	float GetMinDistance() { return minEnemyDistance; }
 	Enemy* GetEnemy() { return enemy; }
 	Enemy* GetMinEnemy() { return minEnemy; }
-
 
 	Tank();
 	~Tank();

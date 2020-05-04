@@ -109,7 +109,6 @@ void MainGame::Update()
 							stageUpdate = false;
 							delete[] enemy;
 							enemy = new Enemy[enemyCount];
-							
 						}
 					}
 				}

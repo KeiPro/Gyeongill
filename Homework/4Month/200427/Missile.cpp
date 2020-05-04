@@ -3,7 +3,7 @@
 #include "MainGame.h"
 #include "Enemy.h"
 
-LRESULT Missile::Init()
+HRESULT Missile::Init()
 {
 	pos.x = 0;
 	pos.y = 0;

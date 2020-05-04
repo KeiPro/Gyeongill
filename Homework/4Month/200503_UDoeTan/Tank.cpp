@@ -136,11 +136,14 @@ void Tank::Fire()
 
 					missile[i].SetUDoeTan(true);
 					missile[i].SetMinEnemy(minEnemy);
+					
+
 					shootCount = 0;
 				}
 				missile[i].SetIsFire(true);
 				missile[i].SetPos(barrelEnd);
 				missile[i].SetAngle(barrelAngle);
+				missile[i].SetTmpAngle(barrelAngle);
 				break;
 			}
 		}
