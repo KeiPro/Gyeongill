@@ -1,6 +1,7 @@
 #pragma once
 #include "GameNode.h"
 
+class Image;
 class Enemy : public GameNode
 {
 private:
@@ -10,6 +11,7 @@ private:
 	int size;
 	
 	bool isAlive;
+	Image* enemyImg;
 
 public:
 

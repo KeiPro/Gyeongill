@@ -37,7 +37,6 @@ void Missile::Update()
 		if ( CheckCollision(this, mainGame->GetEnemy()) ) //충돌이 일어났을 경우.
 		{
 			isFire = false;
-			//(mainGame->GetEnemy())->SetAlive(false); //에네미 render를 없애준다.
 			mainGame->SetScore(mainGame->GetScore() + 100);
 			mainGame->SetEnemyPos();
 
@@ -57,6 +56,7 @@ void Missile::Render(HDC hdc)
 	if (isFire)
 	{
 		//RenderEllipseToCenter(hdc, pos.x, pos.y, size, size);
+		//missileImg->TransparentBltRender(hdc, pos.x - size / 2, pos.y - size / 2);
 		missileImg->TransparentBltRender(hdc, pos.x - size / 2, pos.y - size / 2);
 	}
 }
