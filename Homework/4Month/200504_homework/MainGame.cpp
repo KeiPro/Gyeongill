@@ -2,6 +2,7 @@
 #include "macroFunction.h"
 #include "Image.h"
 #include "Tank.h"
+#include "Enemy.h"
 
 HRESULT MainGame::Init()
 {
@@ -13,13 +14,21 @@ HRESULT MainGame::Init()
 
 	hTimer = (HANDLE)SetTimer(g_hWnd, 0, 10, NULL);
 
+	FontCreate();
+
+	score = 0;
+
 	bg = new Image();
 	bg->Init("Orianna.bmp", WINSIZE_X, WINSIZE_Y);
 
 	//ÅÊÅ©
 	tank = new Tank();
-	tank->Init();
+	tank->Init(this);
 
+	//Àû
+	enemy = new Enemy();
+	enemy->Init();
+	
 	isInit = true;
 	
 	return S_OK;
@@ -28,6 +37,9 @@ HRESULT MainGame::Init()
 
 void MainGame::Release()
 {
+	enemy->Release();
+	delete enemy;
+
 	tank->Release();
 	delete tank;
 
@@ -39,6 +51,9 @@ void MainGame::Release()
 	KeyManager::GetSingleton()->Release();
 	KeyManager::GetSingleton()->ReleaseSingleton();
 
+	
+	DeleteObject(font);
+
 	backBuffer->Release();
 	delete backBuffer;
 }
@@ -48,6 +63,11 @@ void MainGame::Update()
 	if (tank)
 	{
 		tank->Update();
+	}
+
+	if (enemy)
+	{
+		enemy->Update();
 	}
 
 	InvalidateRect(g_hWnd, NULL, false); //false·Î ¹Ù²ãÁØ´Ù.
@@ -67,7 +87,44 @@ void MainGame::Render(HDC hdc)
 		tank->Render(backBuffer->GetMemDC());
 	}
 
+	if (enemy)
+	{
+		enemy->Render(backBuffer->GetMemDC());
+	}
+	
 	backBuffer->Render(hdc, 0, 0);
+}
+
+
+void MainGame::SetEnemyPos()
+{
+	float x = WINSIZE_X;
+	float y = WINSIZE_Y - enemy->GetSize() / 2;
+	FPOINT pos;
+	pos.x = x;
+	pos.y = y;
+
+	enemy->SetSpeed(enemy->GetSpeed() * 1.3f);
+	enemy->SetPos(pos);
+}
+
+void MainGame::FontCreate()
+{
+	lf.lfHeight = 20;
+	lf.lfWidth = 0;
+	lf.lfEscapement = 0;
+	lf.lfOrientation = 0;
+	lf.lfWeight = FW_BOLD;
+	lf.lfItalic = 0;
+	lf.lfUnderline = 0;
+	lf.lfStrikeOut = 0;
+	lf.lfCharSet = HANGUL_CHARSET;
+	lf.lfOutPrecision = 0;
+	lf.lfClipPrecision = 0;
+	lf.lfQuality = 0;
+	lf.lfPitchAndFamily = 0;
+	strcpy_s(lf.lfFaceName, "¸¼Àº °íµñ");
+	font = CreateFontIndirect(&lf);
 }
 
 LRESULT MainGame::MainProc(HWND hWnd, UINT iMessage, WPARAM wParam, LPARAM lParam)

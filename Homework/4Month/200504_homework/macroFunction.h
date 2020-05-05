@@ -1,6 +1,8 @@
 // macroFunction.h
 #pragma once
 #include "pch.h"
+#include "Missile.h"
+#include "Enemy.h"
 
 inline void RenderLine(HDC hdc, int startX, int startY, int endX, int endY)
 {
@@ -95,6 +97,21 @@ inline float GetDistance(float x1, float y1, float x2, float y2)
 	float dist = sqrt(x * x + y * y);
 
 	return dist;
+}
+
+inline bool CheckCollision(Missile* missile, Enemy* enemy)
+{
+	float hMissileSize = missile->GetSize() / 2;
+	float hEnemySize = enemy->GetSize() / 2;
+	FPOINT missilePos = missile->GetPos();
+	FPOINT enemyPos = enemy->GetPos();
+
+	if ((hMissileSize + hEnemySize) >= GetDistance(missilePos.x, missilePos.y, enemyPos.x, enemyPos.y))
+	{
+		return true;
+	}
+
+	return false;
 }
 
 //inline bool CheckCollision(Missile* m1, Missile* m2)

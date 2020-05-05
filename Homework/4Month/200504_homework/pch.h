@@ -1,4 +1,5 @@
 #pragma once
+#pragma comment(lib, "msimg32.lib")
 
 #include <Windows.h>
 #include <math.h>

@@ -58,6 +58,7 @@ public:
 	void Release();
 
 	void Render(HDC hdc, int destX, int dexY);
+	void TransparentBltRender(HDC hdc, int destX, int destY);
 
 	HDC GetMemDC() { return imageInfo->hMemDC; }
 

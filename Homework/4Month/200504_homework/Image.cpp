@@ -92,13 +92,12 @@ void Image::Render(HDC hdc, int destX, int desY)
 		SRCCOPY);					// 복사 옵션
 
 
-	*/
+	*///
+}
 
-
-
-
-
-	//
+void Image::TransparentBltRender(HDC hdc, int destX, int destY)
+{
+	TransparentBlt(hdc, destX, destY, imageInfo->width, imageInfo->height, imageInfo->hMemDC, 0, 0, imageInfo->width, imageInfo->height, RGB(255, 0, 255) );
 }
 
 Image::Image()
