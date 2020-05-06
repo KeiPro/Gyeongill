@@ -21,5 +21,3 @@ gif를 bitmap으로 풀어내는 프로그램으로 리소스를 풀어내는 선 작업이 필요하고
 
 기간 5/7 ~ 5 /13 까지.
 
-https://www.spriters-resource.com/neo_geo_ngcd/snkvcapchaos/sheet/5150/
-
